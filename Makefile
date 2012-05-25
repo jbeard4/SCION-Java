@@ -58,13 +58,18 @@ $(scionjar) : $(scxmlclass) $(scionclass)
 	mkdir -p build/jar
 	cd build/class && jar cf scion.jar com/inficon/scion/SCXML.class com/inficon/scion/SCION.class && mv scion.jar ../jar/
 
+build/doc : src/com/inficon/scion/SCXML.java
+	mkdir -p build/doc
+	javadoc -d build/doc/ -classpath build/class/:lib/js.jar  src/com/inficon/scion/SCXML.java
+
 #aliases
 scion.js : $(scionjs)
 scion.class : $(scionclass)
 scxml.class : $(scxmlclass)
 test.class : $(testclass)
 jar : $(scionjar)
+doc : build/doc
 clean : 
 	rm -rf build
 
-.PHONY : scion.js scion.class scxml.class clean run-test get-deps clean-deps jar
+.PHONY : scion.js scion.class scxml.class clean run-test get-deps clean-deps jar doc
