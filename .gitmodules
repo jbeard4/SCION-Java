@@ -1,3 +1,0 @@
-[submodule "js-lib/SCION"]
-	path = js-lib/SCION
-	url = git://github.com/jbeard4/SCION.git
