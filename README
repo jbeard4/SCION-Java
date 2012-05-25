@@ -1,3 +1,5 @@
 SCION is an implementation of Statecharts in JavaScript. 
 
 SCION-Java provides lightweight bindings to the SCION library for Java. This allows SCXML to easily be used in Java development.
+
+Online documentation can be found here: http://jbeard4.github.com/SCION-Java/docs/com/inficon/scion/SCXML.html
