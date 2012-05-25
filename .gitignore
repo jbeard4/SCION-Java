@@ -3,3 +3,4 @@ lib/
 tmp/
 js-lib/
 *.sw*
+node_modules/
