@@ -3,9 +3,8 @@ var scion = require('core/scion'),
     console = require('rhino/util/console'),
     xml2jsonml = require('rhino/util/xml2jsonml');
 
-function createModelFromPath(path){
+function xmlDocToJsonML(doc){
 
-    var doc = xml2jsonml.loadDOMFromPath(path);
     var scxmlJson = xml2jsonml.xmlDocToJsonML(doc); 
 
     var annotatedScxmlJson = scion.annotator.transform(scxmlJson);
