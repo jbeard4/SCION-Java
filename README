@@ -1,0 +1,3 @@
+SCION is an implementation of Statecharts in JavaScript. 
+
+SCION-Java provides lightweight bindings to the SCION library for Java. This allows SCXML to easily be used in Java development.
