@@ -56,7 +56,7 @@ run-test : $(testclass) lib/js.jar
 
 $(scionjar) : $(scxmlclass) $(scionclass)
 	mkdir -p build/jar
-	cd build/class && jar cf scion.jar com/inficon/scion/SCXML.class com/inficon/scion/SCION.class && mv scion.jar ../jar/
+	cd build/class && jar cf scion.jar com/inficon/scion/SCXML.class com/inficon/scion/SCION1.class com/inficon/scion/SCION.class && mv scion.jar ../jar/
 
 build/doc : src/com/inficon/scion/SCXML.java
 	mkdir -p build/doc
