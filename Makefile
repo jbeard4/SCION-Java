@@ -1,3 +1,9 @@
+scionjs = build/js/SCION.js
+scxmlclass = build/class/com/inficon/scion/SCXML.class
+scionclass = build/class/com/inficon/scion/SCION.class
+testclass = build/test/Test.class
+scionjar = build/jar/scion.jar
+
 #clone SCION
 js-lib/SCION : 
 	git clone --recursive git://github.com/jbeard4/SCION.git js-lib/SCION
@@ -22,37 +28,43 @@ clean-deps :
 	rm lib/js.jar
 	rm -rf js-lib/SCION
 
-build :
-	mkdir build
 
 #use node and stitch to combine everything
 #append extra stuff to the end
-build/SCION.js : build js-src/appendToSCION.js node_modules/stitch js-lib/SCION
+$(scionjs)  : js-src/appendToSCION.js node_modules/stitch js-lib/SCION
+	mkdir -p build/js
 	node js-src/build/stitch.js 
-	cat js-src/appendToSCION.js >> build/SCION.js
+	cat js-src/appendToSCION.js >> $(scionjs)
 
 #compile js to a big class using jsc
-build/com/inficon/scion/SCION.class : build/SCION.js lib/js.jar
-	java -cp lib/js.jar org.mozilla.javascript.tools.jsc.Main -extends java.lang.Object -package com.inficon.scion build/SCION.js
+$(scionclass) : $(scionjs) lib/js.jar
+	mkdir -p build/class
+	java -cp lib/js.jar org.mozilla.javascript.tools.jsc.Main -extends java.lang.Object -package com.inficon.scion $(scionjs)
+	mv build/js/com build/class
 
 #compile java 
-build/com/inficon/scion/SCXML.class : build/com/inficon/scion/SCION.class lib/js.jar
-	javac -d build/ -classpath lib/js.jar:build src/com/inficon/scion/SCXML.java
+$(scxmlclass) : $(scionclass) lib/js.jar
+	javac -d build/class/ -classpath lib/js.jar:build/class src/com/inficon/scion/SCXML.java
 
-build/Test.class : build/com/inficon/scion/SCXML.class lib/js.jar
-	javac -d build/ -classpath lib/js.jar:build test/TestSCXML.java
+$(testclass) : $(scxmlclass) lib/js.jar
+	mkdir -p build/test
+	javac -d build/class/ -classpath lib/js.jar:build/class test/TestSCXML.java
 
-run-test : build/Test.class lib/js.jar
-	java -classpath lib/js.jar:build TestSCXML
+run-test : $(testclass) lib/js.jar
+	mkdir -p build/jar
+	java -classpath lib/js.jar:build/class TestSCXML
 
-#TODO: jar everything
+$(scionjar) : $(scxmlclass) $(scionclass)
+	mkdir -p build/jar
+	cd build/class && jar cf scion.jar com/inficon/scion/SCXML.class com/inficon/scion/SCION.class && mv scion.jar ../jar/
 
 #aliases
-scion.js : build/SCION.js
-scion.class : build/com/inficon/scion/SCION.class
-scxml.class : build/com/inficon/scion/SCXML.class
-test.class : build/Test.class
+scion.js : $(scionjs)
+scion.class : $(scionclass)
+scxml.class : $(scxmlclass)
+test.class : $(testclass)
+jar : $(scionjar)
 clean : 
 	rm -rf build
 
-.PHONY : scion.js scion.class scxml.class clean run-test get-deps clean-deps
+.PHONY : scion.js scion.class scxml.class clean run-test get-deps clean-deps jar

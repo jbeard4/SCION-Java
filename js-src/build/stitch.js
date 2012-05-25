@@ -6,7 +6,7 @@ var pkg = stitch.createPackage({
 });
 
 pkg.compile(function (err, source){
-  fs.writeFile('build/SCION.js', source, function (err) {
+  fs.writeFile('build/js/SCION.js', source, function (err) {
     if (err) throw err;
     console.log('Compiled scion.js');
   });
