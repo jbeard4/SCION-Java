@@ -23,6 +23,6 @@ function startInterpreter(interpreter){
     return interpreter.getConfiguration();
 }
 
-function genEvent(interpreter,name){
-    return interpreter.gen({name : name});
+function genEvent(interpreter,name,data){
+    return interpreter.gen({name : name,data : data});
 }

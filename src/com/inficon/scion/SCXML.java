@@ -116,6 +116,6 @@ public class SCXML {
     * to take a macrostep as described in <a href="https://github.com/jbeard4/SCION/wiki/Scion-Semantics">SCION Semantics</a>.
     */
     public Set<String> gen(String eventName, Object eventData){
-        return new HashSet<String>((List<String>) scion.genEvent(this.interpreter,eventName));
+        return new HashSet<String>((List<String>) scion.genEvent(this.interpreter,eventName,eventData));
     }
 }
