@@ -4,6 +4,8 @@ scionclass = build/class/com/inficon/scion/SCION.class
 testclass = build/test/Test.class
 scionjar = build/jar/scion.jar
 
+all : jar 
+
 #clone SCION
 js-lib/SCION : 
 	git clone --recursive git://github.com/jbeard4/SCION.git js-lib/SCION
@@ -39,12 +41,14 @@ $(scionjs)  : js-src/appendToSCION.js node_modules/stitch js-lib/SCION
 #compile js to a big class using jsc
 $(scionclass) : $(scionjs) lib/js.jar
 	mkdir -p build/class
-	java -cp lib/js.jar org.mozilla.javascript.tools.jsc.Main -extends java.lang.Object -package com.inficon.scion $(scionjs)
+	java -cp lib/js.jar org.mozilla.javascript.tools.jsc.Main -opt 9 -extends java.lang.Object -package com.inficon.scion $(scionjs)
 	mv build/js/com build/class
 
 #compile java 
 $(scxmlclass) : $(scionclass) lib/js.jar
-	javac -d build/class/ -classpath lib/js.jar:build/class src/com/inficon/scion/SCXML.java
+	javac -d build/class/ -classpath lib/js.jar:build/class \
+		src/com/inficon/scion/SCXML.java \
+		src/com/inficon/scion/SCXMLListener.java
 
 $(testclass) : $(scxmlclass) lib/js.jar
 	mkdir -p build/test
@@ -56,7 +60,11 @@ run-test : $(testclass) lib/js.jar
 
 $(scionjar) : $(scxmlclass) $(scionclass)
 	mkdir -p build/jar
-	cd build/class && jar cf scion.jar com/inficon/scion/SCXML.class com/inficon/scion/SCION1.class com/inficon/scion/SCION.class && mv scion.jar ../jar/
+	cd build/class && jar cf scion.jar com/inficon/scion/SCXML.class \
+		com/inficon/scion/SCXMLListener.class \
+		com/inficon/scion/SCION1.class \
+		com/inficon/scion/SCION.class \
+		&& mv scion.jar ../jar/
 
 build/doc : src/com/inficon/scion/SCXML.java
 	mkdir -p build/doc
@@ -72,4 +80,4 @@ doc : build/doc
 clean : 
 	rm -rf build
 
-.PHONY : scion.js scion.class scxml.class clean run-test get-deps clean-deps jar doc
+.PHONY : scion.js scion.class scxml.class clean run-test get-deps clean-deps jar doc all

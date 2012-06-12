@@ -1,28 +1,45 @@
 //this gets appended to the top-level modules automatically by Makefile
-var scion = require('core/scion'),
-    console = require('rhino/util/console'),
-    xml2jsonml = require('rhino/util/xml2jsonml');
+var scion = require('scion');
 
-function xmlDocToJsonML(doc){
+function pathToModel(path){
+    var model;
 
-    var scxmlJson = xml2jsonml.xmlDocToJsonML(doc); 
-
-    var annotatedScxmlJson = scion.annotator.transform(scxmlJson);
-
-    var model = scion.json2model(annotatedScxmlJson); 
+    scion.pathToModel(path,function(err,m){
+        if(err) throw err;
+        model = m; 
+    });
 
     return model;
-}
+} 
+
+function urlToModel(url){
+    return scion.urlToModel(url);
+} 
+
+function documentStringToModel(s){
+    return scion.documentStringToModel(s);
+} 
+
+function documentToModel(doc){
+    return scion.documentToModel(doc);
+} 
 
 function createScionInterpreter(model){
-    return new scion.scxml.SimpleInterpreter(model);
+    return new scion.SCXML(model);
 }
 
 function startInterpreter(interpreter){
-    interpreter.start();
-    return interpreter.getConfiguration();
+    return interpreter.start();
 }
 
 function genEvent(interpreter,name,data){
-    return interpreter.gen({name : name,data : data});
+    return interpreter.gen(String(name),data);
+}
+
+function registerListener(interpreter,listener){
+    return interpreter.registerListener(listener);
+}
+
+function unregisterListener(interpreter,listener){
+    return interpreter.unregisterListener(listener);
 }

@@ -1,21 +1,15 @@
 package com.inficon.scion;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
+import java.io.File;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ScriptableObject;
-import com.inficon.scion.SCION;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
 import org.w3c.dom.Document;
-import javax.xml.parsers.ParserConfigurationException;
-import org.xml.sax.SAXException;
-import org.xml.sax.InputSource;
+import com.inficon.scion.SCION;
 
 public class SCXML {
     private static final SCION scion = new SCION();
@@ -26,7 +20,8 @@ public class SCXML {
     * to the SCXML constructor.
     */
     public static Scriptable pathToModel(String path){
-        return fileToModel(new File(path));
+        return (Scriptable) SCXML.scion.pathToModel(path);
+    
     }
 
     /**
@@ -34,23 +29,7 @@ public class SCXML {
     * to the SCXML constructor.
     */
     public static Scriptable fileToModel(File file){
-        //parse the file
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-
-		try {
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			Document dom = db.parse(file);
-            return documentToModel(dom);
-
-		}catch(ParserConfigurationException pce) {
-			pce.printStackTrace();
-		}catch(SAXException se) {
-			se.printStackTrace();
-		}catch(IOException ioe) {
-			ioe.printStackTrace();
-		}
-
-        return null;
+        return (Scriptable) SCXML.scion.pathToModel(file);
     }
 
     /**
@@ -58,7 +37,7 @@ public class SCXML {
     * to the SCXML constructor.
     */
     public static Scriptable documentToModel(Document doc){
-        return (Scriptable) SCXML.scion.xmlDocToJsonML(doc);
+        return (Scriptable) SCXML.scion.documentToModel(doc);
     }
 
     /**
@@ -66,22 +45,7 @@ public class SCXML {
     * which can be passed to the SCXML constructor.
     */
     public static Scriptable documentStringToModel(String docString){
-		try {
-            DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            InputSource is = new InputSource();
-            is.setCharacterStream(new java.io.StringReader(docString));
-            Document doc = db.parse(is);
-
-            return (Scriptable) SCXML.scion.xmlDocToJsonML(doc);
-
-		}catch(ParserConfigurationException pce) {
-			pce.printStackTrace();
-		}catch(SAXException se) {
-			se.printStackTrace();
-		}catch(IOException ioe) {
-			ioe.printStackTrace();
-		}
-        return null;
+        return (Scriptable) SCXML.scion.documentStringToModel(docString);
     }
 
     //constructor
@@ -117,5 +81,13 @@ public class SCXML {
     */
     public Set<String> gen(String eventName, Object eventData){
         return new HashSet<String>((List<String>) scion.genEvent(this.interpreter,eventName,eventData));
+    }
+
+    public void registerListener(SCXMLListener listener){
+        scion.registerListener(this.interpreter,listener);
+    }
+
+    public void unregisterListener(SCXMLListener listener){
+        scion.unregisterListener(this.interpreter,listener);
     }
 }
