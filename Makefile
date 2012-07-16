@@ -8,7 +8,7 @@ all : jar
 
 #clone SCION
 js-lib/SCION : 
-	git clone --recursive git://github.com/jbeard4/SCION.git js-lib/SCION
+	git submodule update --init --recursive
 
 #get rhino
 lib/js.jar : 
@@ -42,7 +42,8 @@ $(scionjs)  : js-src/appendToSCION.js node_modules/stitch js-lib/SCION
 $(scionclass) : $(scionjs) lib/js.jar
 	mkdir -p build/class
 	java -cp lib/js.jar org.mozilla.javascript.tools.jsc.Main -opt 9 -extends java.lang.Object -package com.inficon.scion $(scionjs)
-	mv build/js/com build/class
+	mkdir -p build/class/com/inficon/scion/
+	mv build/js/com/inficon/scion/SCION* build/class/com/inficon/scion/
 
 #compile java 
 $(scxmlclass) : $(scionclass) lib/js.jar
