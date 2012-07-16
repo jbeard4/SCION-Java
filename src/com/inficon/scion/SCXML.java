@@ -19,6 +19,14 @@ public class SCXML {
     * Accepts a path to an SCXML file and returns a Scriptable model object, which can be passed 
     * to the SCXML constructor.
     */
+    public static Scriptable urlToModel(java.net.URL url){
+        return (Scriptable) SCXML.scion.urlToModel(url);
+    }
+
+    /**
+    * Accepts a path to an SCXML file and returns a Scriptable model object, which can be passed 
+    * to the SCXML constructor.
+    */
     public static Scriptable pathToModel(String path){
         return (Scriptable) SCXML.scion.pathToModel(path);
     
@@ -64,6 +72,10 @@ public class SCXML {
     public SCXML(Document doc){
         this.interpreter = (Scriptable) scion.createScionInterpreter(documentToModel(doc));
     }   
+
+    public SCXML(java.net.URL url){
+        this.interpreter = (Scriptable) scion.createScionInterpreter(urlToModel(url));
+    }
 
     //starts the interpreter, returns a string list of state names
     //TODO: should make him a Set<String>

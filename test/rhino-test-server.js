@@ -14,19 +14,6 @@ var server = HttpServer.create(addr, 0);
 var sessionCounter = 0, sessions = {}, timeouts = {}, timeoutMs = 5000;
 
 function loadScxml(scxmlStr,cb){
-    //TODO: change this to use rhino-specific way
-    //FIXME: how do we parse a document from a string in Java?
-    
-    var model = SCXML.documentStringToModel(scxmlStr);
-    var interpreter = new SCXML(model);
-
-    var conf = interpreter.start();
-
-    var sessionToken = sessionCounter;
-    sessionCounter++;
-    sessions[sessionToken] = interpreter; 
-
-    return [sessionToken,interpreter,conf];
 }
 
 //best way I could find to turn a hashset into a native js array
@@ -66,7 +53,14 @@ var handler = new HttpHandler({handle : function(exchange){
         var reqJson = JSON.parse(s);
         if(reqJson.load){
             print("Loading new statechart");
-            var tmp = loadScxml(reqJson.load), sessionToken = tmp[0], interpreter = tmp[1], conf = tmp[2];
+
+            var interpreter = new SCXML(new Packages.java.net.URL(reqJson.load));
+
+            var conf = interpreter.start();
+
+            var sessionToken = sessionCounter;
+            sessionCounter++;
+            sessions[sessionToken] = interpreter; 
 
             responseHeaders.set("Content-Type", "application/json");
             exchange.sendResponseHeaders(200, 0);

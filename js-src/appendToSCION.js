@@ -3,25 +3,40 @@ var scion = require('scion');
 
 function pathToModel(path){
     var model;
-
     scion.pathToModel(path,function(err,m){
         if(err) throw err;
         model = m; 
     });
-
     return model;
 } 
 
+//SCION exposes these APIs as async,
+//but in Java world, they are all assumed to actually be blocking.
 function urlToModel(url){
-    return scion.urlToModel(url);
+    var model;
+    scion.urlToModel(String(url),function(err,m){
+        if(err) throw err;
+        model = m;
+    });
+    return model;
 } 
 
 function documentStringToModel(s){
-    return scion.documentStringToModel(s);
+    var model;
+    scion.documentStringToModel(s,function(err,m){
+        if(err) throw err;
+        model = m;
+    });
+    return model;
 } 
 
 function documentToModel(doc){
-    return scion.documentToModel(doc);
+    var model;
+    scion.documentToModel(doc,function(err,m){
+        if(err) throw err;
+        model = m;
+    });
+    return model;
 } 
 
 function createScionInterpreter(model){
