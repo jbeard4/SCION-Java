@@ -6,7 +6,8 @@ import java.util.List;
 
 public class TestSCXML {
     public static void main(String[] args){
-        SCXML scxml = new SCXML("/home/jbeard/workspace/scion/scxml-test-framework/test/basic/basic1.scxml");
+
+        SCXML scxml = new SCXML("./js-lib/SCION/test/scxml-test-framework/test/basic/basic1.scxml");
 
         scxml.registerListener( 
             new SCXMLListener(){

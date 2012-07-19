@@ -1,5 +1,5 @@
 #!/bin/bash
-npm install request #in case we don't have it
+npm install request underscore nopt node-static #in case we don't have it
 
 #start the server
 java -cp lib/js.jar:build/class/ org.mozilla.javascript.tools.shell.Main -debug test/rhino-test-server.js &
