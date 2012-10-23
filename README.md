@@ -3,3 +3,5 @@
 **SCION-Java** provides lightweight bindings to the SCION library for Java, via [Rhino](http://www.mozilla.org/rhino/). This allows SCXML to easily be used in Java development.
 
 For a basic usage example of usage, see [TestSCXML.java](https://github.com/jbeard4/SCION-Java/blob/master/test/TestSCXML.java)
+
+Documentation is [here](http://jbeard4.github.com/SCION-Java/docs/com/inficon/scion/SCXML.html).
