@@ -15,6 +15,11 @@ public class SCXML {
     private static final SCION scion = new SCION();
     private Scriptable interpreter;
 
+    //TODO: there should be a nicer interface for this
+    public static void addActionHandler(String namespace, String localName, String actionString){
+        scion.addActionHandler(namespace, localName, actionString);
+    }
+
     /**
     * Accepts a path to an SCXML file and returns a Scriptable model object, which can be passed 
     * to the SCXML constructor.
@@ -59,31 +64,35 @@ public class SCXML {
     //constructor
     public SCXML(Scriptable model){
         this.interpreter = (Scriptable) scion.createScionInterpreter(model);
+        this.setEvaluationContext(this);
     }   
 
     public SCXML(String path){
         this.interpreter = (Scriptable) scion.createScionInterpreter(pathToModel(path));
+        this.setEvaluationContext(this);
     }   
 
     public SCXML(File file){
         this.interpreter = (Scriptable) scion.createScionInterpreter(fileToModel(file));
+        this.setEvaluationContext(this);
     }   
 
     public SCXML(Document doc){
         this.interpreter = (Scriptable) scion.createScionInterpreter(documentToModel(doc));
+        this.setEvaluationContext(this);
     }   
 
     public SCXML(java.net.URL url){
         this.interpreter = (Scriptable) scion.createScionInterpreter(urlToModel(url));
+        this.setEvaluationContext(this);
     }
 
     //starts the interpreter, returns a string list of state names
-    //TODO: should make him a Set<String>
     /**
     * Starts the interpreter; should  be called before the first time gen is called, and 
     * should only be called once in an SCXML object's lifespan.
     */
-    public Set<String> start(){
+    public synchronized Set<String> start(){
         return new HashSet<String>((List<String>) scion.startInterpreter(this.interpreter));
     }
 
@@ -91,7 +100,7 @@ public class SCXML {
     * Sends an event to the interpreter, which will prompt the interpreter
     * to take a macrostep as described in <a href="https://github.com/jbeard4/SCION/wiki/Scion-Semantics">SCION Semantics</a>.
     */
-    public Set<String> gen(String eventName, Object eventData){
+    public synchronized Set<String> gen(String eventName, Object eventData){
         return new HashSet<String>((List<String>) scion.genEvent(this.interpreter,eventName,eventData));
     }
 
@@ -101,5 +110,9 @@ public class SCXML {
 
     public void unregisterListener(SCXMLListener listener){
         scion.unregisterListener(this.interpreter,listener);
+    }
+
+    public void setEvaluationContext(Object o){
+        scion.setEvaluationContext(this.interpreter,o);
     }
 }

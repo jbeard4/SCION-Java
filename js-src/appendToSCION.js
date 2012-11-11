@@ -58,3 +58,13 @@ function registerListener(interpreter,listener){
 function unregisterListener(interpreter,listener){
     return interpreter.unregisterListener(listener);
 }
+
+function addActionHandler(namespace,localName,actionString){
+    var actionTags = scion.ext.actionCodeGeneratorModule.gen.actionTags;
+    var namespaceObject = actionTags[String(namespace)] || (actionTags[String(namespace)] = {});
+    namespaceObject[String(localName)] = eval(String(actionString));
+}
+
+function setEvaluationContext(scxml,o){
+    scxml.opts.evaluationContext = o;
+}
